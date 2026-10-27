@@ -7,9 +7,12 @@ export default function BugStrictMode() {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    setInterval(() => {
-      setCount((c) => c + 1);
+    const timerIntervalId = setInterval(() => {
+      setCount((currentCount) => currentCount + 1);
     }, 1000);
+
+    // Cleanup clears the interval so only one timer runs
+    return () => clearInterval(timerIntervalId);
   }, []);
 
   return (
@@ -20,4 +23,7 @@ export default function BugStrictMode() {
   );
 }
 
-// Write your explanation of how StrictMode helps us catch this bug
+// StrictMode mounts, unmounts, and remounts the component in development.
+// Without cleanup, the first interval kept running, so two intervals
+// incremented the count by 2 each second. Clearing the interval in the cleanup
+// function fixes this.
