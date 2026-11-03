@@ -6,7 +6,9 @@ export default function BugEventPropagation() {
     alert("RED BOX CLICKED ❌ Don't show me!");
   }
 
-  function handleInnerClick() {
+  function handleInnerClick(clickEvent) {
+    // Stops the click from bubbling up to the red box
+    clickEvent.stopPropagation();
     alert('Button Clicked ✅');
   }
 
@@ -22,3 +24,6 @@ export default function BugEventPropagation() {
     </>
   );
 }
+
+// Click events bubble from the button up to the red box, so both handlers ran.
+// Calling stopPropagation() in the button's handler stops the event from reaching the box.
