@@ -1,33 +1,15 @@
-import { useEffect, useState } from 'react';
-import UserProfile from './components/UserProfile';
-import TaskFilterButtons from './components/TaskFilterButtons';
-import TaskItem from './components/TaskItem';
+import { useState } from 'react';
+import UserProfile from '../../components/UserProfile';
+import TaskFilterButtons from '../../components/TaskFilterButtons';
+import TaskItem from '../../components/TaskItem';
+import { useTasks } from '../../hooks/useTasks';
+import { filterTasks } from '../../utils/filterTasks';
 
 export default function StudentWork() {
-  const [tasks, setTasks] = useState([]);
+  const { tasks, loading } = useTasks();
   const [filter, setFilter] = useState('all');
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setTasks([
-        { id: 1, title: 'Learn React', completed: true },
-        { id: 2, title: 'Refactor code', completed: false },
-        { id: 3, title: 'Organize files', completed: false },
-      ]);
-      setLoading(false);
-    }, 500);
-
-    return () => clearTimeout(timeout);
-  }, []);
-
-  let visibleTasks = tasks;
-  if (filter === 'completed') {
-    visibleTasks = tasks.filter((task) => task.completed);
-  }
-  if (filter === 'pending') {
-    visibleTasks = tasks.filter((task) => !task.completed);
-  }
+  const visibleTasks = filterTasks(tasks, filter);
 
   if (loading) {
     return <p>Loading tasks...</p>;
