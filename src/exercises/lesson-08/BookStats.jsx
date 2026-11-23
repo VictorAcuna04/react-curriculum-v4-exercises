@@ -1,17 +1,14 @@
+import { memo, useMemo } from 'react';
 import {
   useRenderCounter,
   RenderCounter,
 } from '../../private/components/renderCounter.jsx';
 import styles from './BookStats.module.css';
 
-// Book Statistics Component - Expensive calculations run unnecessarily
 function BookStats({ books }) {
   const { count } = useRenderCounter('BookStats');
 
-  // TODO #4: Optimize these expensive calculations with useMemo
-  // These calculations run every time the component renders,
-  // even when the books array hasn't changed
-  const calculateStats = () => {
+  const stats = useMemo(() => {
     // eslint-disable-next-line react-hooks/purity
     const startTime = performance.now();
 
@@ -25,7 +22,6 @@ function BookStats({ books }) {
 
     const totalBooks = books.length;
 
-    // Handle empty books array
     if (totalBooks === 0) {
       // eslint-disable-next-line react-hooks/purity
       const endTime = performance.now();
@@ -85,11 +81,9 @@ function BookStats({ books }) {
       oldestBook: `${oldestBook.title} (${oldestBook.publishYear})`,
       calculationTime: calculationTime.toFixed(4),
       microseconds: microseconds.toFixed(2),
-      _dummy: dummy, // Prevent optimization from removing our timing code
+      _dummy: dummy,
     };
-  };
-
-  const stats = calculateStats();
+  }, [books]);
 
   return (
     <div className={styles.statsContainer}>
@@ -132,4 +126,4 @@ function BookStats({ books }) {
   );
 }
 
-export default BookStats;
+export default memo(BookStats);
